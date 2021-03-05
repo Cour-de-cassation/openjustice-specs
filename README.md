@@ -289,14 +289,19 @@ La publication de cette taxonomie permettra principalement au prestataire charg�
 ### Paramètres de la requête
 
 * **id** (`string`) : identifiant de l'entrée de taxonomie à interroger (`type`, `jurisdiction`, `chamber`, etc. - les valeurs disponibles sont accessibles via `GET $API/taxonomy`)
+* **key** (`string`) : clé dont on veut récupérer l'intitulé complet (le paramètre `id` est alors requis)
+* **value** (`string`) : intitulé complet dont on veut récupérer la clé (le paramètre `id` est alors requis)
 
 ### Format du résultat
 
 Une requête réussie retourne un objet contenant les propriétés suivantes :
 
 * **id** (`string`) : identifiant de l'entrée de taxonomie interrogée
+* **key** (`string`) : clé dont on veut récupérer l'intitulé complet (pour une requête avec `key`)
+* **value** (`string`) : intitulé complet dont on veut récupérer la clé (pour une requête avec `value`)
+* **result** (`array`) : liste des résultats retournés, chaque résultat étant un objet contenant un couple clé/valeur (appel par `id` seul), ou seulement une clé ou une valeur (appel par `key` ou `value`)
 
-Une requête réussie retourne un objet contenant une liste de couples clé/valeur (appel par `id` seul), ou seulement une clé ou une valeur (appel par `key` ou `value`), par exemple :
+Par exemple :
 
 `GET $API/taxonomy?id=publication` :
 
