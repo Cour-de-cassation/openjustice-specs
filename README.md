@@ -272,3 +272,91 @@ Cette interface, à l’usage exclusif de la Cour de cassation, permet l’index
 ### 2.7. Administration : `GET/POST/PUT/DELETE /admin`
 
 Enfin l’API OpenJustice possède une seconde interface privée et sécurisée, elle aussi à l’usage exclusif de la Cour de cassation, destinée à l’administration et à la maintenance du dispositif (concernant essentiellement la récupération de son état et de son historique de fonctionnement).
+
+3.3.2 GET /decision
+
+Une requête réussie retourne un objet contenant les propriétés suivantes (liste à compléter) :
+id (string) : identifiant de la décision ;
+jurisdiction (string) : clé de la juridiction (utiliser GET /taxonomy?id=jurisdiction&key=<clé jurisdiction> pour récupérer le nom de celle-ci) ;
+chamber (string) : clé de la chambre (utiliser GET /taxonomy?id=chamber& context_value=<clé jurisdiction>&key=<clé chamber> pour récupérer le nom de celle-ci) ;
+number (string) : numéro de pourvoi de la décision ;
+ecli (string) : code ECLI de la décision ;
+nac (string) : code NAC de la décision ;
+formation (string) : clé de la formation (utiliser GET /taxonomy?id=formation& context_value=<clé jurisdiction>&key=<clé formation> pour récupérer le nom de celle-ci) ;
+publication (string) : clé du niveau de publication (utiliser GET /taxonomy?id=publication& context_value=<clé jurisdiction>&key=<clé publication> pour récupérer le nom de celui-ci) ;
+creation_date (date dd/mm/yyyy) : date de création de la décision ;
+update_date (date dd/mm/yyyy) : date de dernière mise à jour de la décision ;
+solution (string) : clé de la solution (utiliser GET /taxonomy?id=solution& context_value=<clé jurisdiction>&key=<clé solution > pour récupérer le nom de celle-ci) ;
+solution_alt (string) : valeur de la solution (si celle-ci n’est pas normalisée et comprise dans la taxonomie) ;
+text (string): texte intégral et pseudonymisé de la décision (texte brut) ;
+zones (object) : objet définissant les différentes zones détectées dans le texte intégral de la décision. Chaque zone contient une liste d’objets { start, end } indiquant respectivement l’indice de début et de fin des caractères (relativement au texte intégral) contenus dans chaque segment de la zone (une zone pouvant contenir plusieurs segments) :
+introduction : introduction de la décision ;
+expose : exposé du litige ;
+moyens : moyens ;
+motivations : motivations ;
+dispositif : dispositifs ;
+annexes : moyens annexés.
+title (array) : liste des éléments de titrage par ordre de maillons (texte brut) ;
+summary (string) : sommaire (texte brut).
+
+À compléter.
+
+3.3.3 GET /taxonomy
+
+Une requête réussie retourne un objet contenant une liste de couples clé/valeur (appel par id seul), ou seulement une clé ou une valeur (appel par key ou value), par exemple :
+
+GET /taxonomy?id=publication :
+{
+	"success": true,
+	"id": "publication",
+	"result": {
+		"nonpub": "Non publié",
+		"bulletin": "Au Bulletin",
+		"lettre": "Lettre de chambre",
+		"rapport": "Au Rapport",
+		"c": "Publié C",
+	}
+}
+
+GET /taxonomy?id=publication&key=c :
+{
+	"success": true,
+	"id": "publication",
+	"key": "c",
+	"result": {
+		"value": "Publié C",
+	}
+}
+
+GET /taxonomy?id=publication&value=Publi%C3%A9%20C :
+{
+	"success": true,
+	"id": "publication",
+	"value": "Publié C",
+	"result": {
+		"key": "c",
+	}
+}
+
+À compléter.
+
+3.3.4 GET /stats
+
+À compléter.
+
+3.3.5 GET /export
+
+Une requête réussie retourne un objet contenant une liste de décisions, chaque décision étant un objet similaire à celui retourné par une requête GET /decision.
+
+Propriétés de l’objet retourné :
+offset (integer) : numéro du lot courant (le premier lot ayant un offset valant 0) ;
+size (integer) : nombre de résultats retournés par lot ;
+query (object) : objet contenant les paramètres de la requête originelle (voir 3.2.5) ;
+total (integer) : nombre total de décisions retournées par la requête ;
+decisions (array) : liste des décisions retournées (voir 3.3.2).
+
+3.4. Hébergement et disponibilité
+
+L’API OpenJustice sera hébergée au sein de l’infrastructure technique du ministère de la Justice, dans un environnement virtualisé (Red Hat Enterprise) bénéficiant d’une connexion directe et sécurisée au RPVJ (réseau interne au ministère de la Justice, dans lequel sont notamment archivées les décisions intègres et où le processus de pseudonymisation est mis en œuvre). 
+
+À compléter.
