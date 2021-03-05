@@ -130,7 +130,7 @@ L'API publique permet en premier lieu d'effectuer une recherche sur la base de d
 
 * Texte en saisie libre, lequel sera mis en correspondance avec tout ou partie du contenu des décisions
 * Le mode de mise en rapport des termes de la recherche (*ou*, *et*, expression exacte)
-* Contenu ciblé par la recherche : décision intégrale, zones spécifiques de la décision (exposé du litige, moyens, motivations, dispositif), sommaire, titrages, numéro de pourvoi, visa, etc.
+* Contenu ciblé par la recherche : décision intégrale, zones spécifiques de la décision (exposé du litige, moyens, motivations, dispositif), sommaire, titrages, numéro de pourvoi, visas, etc.
 * Nature de décision (filtre)
 * Matière (filtre)
 * Chambre et formation (filtre)
@@ -154,7 +154,7 @@ La récupération d'une décision complète repose sur le point d'entrée `GET /
 ### Paramètres de la requête
 
 * **query** (`string`) : la chaîne de caractères correspondant à la recherche (le support du format "simple query" tel qu'il est implémenté par Elasticsearch est envisagé). Une recherche avec un paramètre `query` vide est ignorée et retourne un résultat vide
-* **fields** (`array`) : la liste des champs, métadonnées ou zones de contenu ciblés par la recherche (parmi les valeurs : `expose`, `moyens`, `motivations`, `dispositif`, `annexes`, `sommaire`, `titrage`, `visa`, etc.). Une recherche avec un paramètre `fields` vide est appliquée à l'intégralité de la décision (introduction et moyens annexés compris) mais va exclure les métadonnées (sommaire, titrage, etc.)
+* **fields** (`array`) : la liste des champs, métadonnées ou zones de contenu ciblés par la recherche (parmi les valeurs : `expose`, `moyens`, `motivations`, `dispositif`, `annexes`, `sommaire`, `titrage`, `visas`, etc.). Une recherche avec un paramètre `fields` vide est appliquée à l'intégralité de la décision (introduction et moyens annexés compris) mais va exclure les métadonnées (sommaire, titrage, etc.)
 * **operator** (`string`) : l'opérateur logique reliant les multiples termes que le paramètre `query` peut contenir (`or` par défaut, `and` ou `exact` – dans ce dernier cas le moteur recherchera exactement le contenu du paramètre `query`)
 * **type** (`array`) : filtre les résultats suivant la natures des décisions (parmi les valeurs : `arret`, `qpc`, `qpj`, `ordonnance`, `saisie`). Une recherche avec un paramètre `type` vide retourne des décisions de toutes natures
 * **theme** (`array`) : filtre les résultats suivant la matière (nomenclature de la Cour de cassation) relative aux décisions (les valeurs disponibles sont accessibles via `GET $API/taxonomy?id=theme`). Une recherche avec un paramètre `theme` vide retourne des décisions relatives à toutes les matières
@@ -189,17 +189,18 @@ Une requête réussie retourne un objet contenant une liste de résultats ainsi 
   * **highlight** (`array`) : liste des segments de la décision ayant des correspondances avec la requête saisie, les correspondances étant délimitées par des balises `<em>`. Chaque segment est un objet contenant les propriétés suivantes :
     * **field** (`string`) : nom du champ ou de la zone contenant le segment (par exemple : `expose`, `dispositif`, `summary`, etc.). Il peut y avoir plusieurs segments par zone
     * **fragment** (`string`) : segment de texte contenant une ou plusieurs correspondances
-  * **jurisdiction** (`string`) : clé de la juridiction. Par défaut, utiliser `GET $API/taxonomy?id=jurisdiction&key=$jurisdiction` pour récupérer l'intitulé complet de celle-ci. Si la requête utilise `resolve_references=true`, alors cette propriété est retournée sous la forme d'un objet `{ key, value }`, où  `key` contient la clé et `value` contient l'intitulé complet de celle-ci
-  * **chamber** (`string`) : clé de la chambre. Par défaut, utiliser `GET $API/taxonomy?id=chamber&context_value=$jurisdiction&key=$chamber` pour récupérer l'intitulé complet de celle-ci. Si la requête utilise `resolve_references=true`, alors cette propriété est retournée sous la forme d'un objet `{ key, value }`, où  `key` contient la clé et `value` contient l'intitulé complet de celle-ci
+  * **jurisdiction** (`string`) : clé de la juridiction. Par défaut, utiliser `GET $API/taxonomy?id=jurisdiction&key=$jurisdiction` pour récupérer l'intitulé complet de celle-ci. Si la requête utilise `resolve_references=true`, alors cette propriété est retournée sous la forme d'un objet `{ key, value }`, où `key` contient la clé et `value` contient l'intitulé complet de celle-ci
+  * **chamber** (`string`) : clé de la chambre. Par défaut, utiliser `GET $API/taxonomy?id=chamber&context_value=$jurisdiction&key=$chamber` pour récupérer l'intitulé complet de celle-ci. Si la requête utilise `resolve_references=true`, alors cette propriété est retournée sous la forme d'un objet `{ key, value }`, où `key` contient la clé et `value` contient l'intitulé complet de celle-ci
   * **number** (`string`) : numéro de pourvoi de la décision
   * **ecli** (`string`) : code ECLI de la décision
-  * **formation** (`string`) : clé de la formation. Par défaut, utiliser `GET $API/taxonomy?id=formation&context_value=$jurisdiction&key=$formation` pour récupérer l'intitulé complet de celle-ci. Si la requête utilise `resolve_references=true`, alors cette propriété est retournée sous la forme d'un objet `{ key, value }`, où  `key` contient la clé et `value` contient l'intitulé complet de celle-ci
-  * **publication** (`string`) : clé du niveau de publication. Par défaut, utiliser `GET $API/taxonomy?id=publication&context_value=$jurisdiction&key=$publication` pour récupérer le nom de celui-ci. Si la requête utilise `resolve_references=true`, alors cette propriété est retournée sous la forme d'un objet `{ key, value }`, où  `key` contient la clé et `value` contient l'intitulé complet de celle-ci
+  * **formation** (`string`) : clé de la formation. Par défaut, utiliser `GET $API/taxonomy?id=formation&context_value=$jurisdiction&key=$formation` pour récupérer l'intitulé complet de celle-ci. Si la requête utilise `resolve_references=true`, alors cette propriété est retournée sous la forme d'un objet `{ key, value }`, où `key` contient la clé et `value` contient l'intitulé complet de celle-ci
+  * **publication** (`string`) : clé du niveau de publication. Par défaut, utiliser `GET $API/taxonomy?id=publication&context_value=$jurisdiction&key=$publication` pour récupérer le nom de celui-ci. Si la requête utilise `resolve_references=true`, alors cette propriété est retournée sous la forme d'un objet `{ key, value }`, où `key` contient la clé et `value` contient l'intitulé complet de celle-ci
   * **creation_date** (`date au format dd/mm/yyy`) : date de création de la décision
-  * **solution** (`string`) : clé de la solution. Par défaut, utiliser `GET $API/taxonomy?id=solution&context_value=$jurisdiction&key=$solution` pour récupérer l'intitulé complet de celle-ci. Si la requête utilise `resolve_references=true`, alors cette propriété est retournée sous la forme d'un objet `{ key, value }`, où  `key` contient la clé et `value` contient l'intitulé complet de celle-ci
+  * **solution** (`string`) : clé de la solution. Par défaut, utiliser `GET $API/taxonomy?id=solution&context_value=$jurisdiction&key=$solution` pour récupérer l'intitulé complet de celle-ci. Si la requête utilise `resolve_references=true`, alors cette propriété est retournée sous la forme d'un objet `{ key, value }`, où `key` contient la clé et `value` contient l'intitulé complet de celle-ci
   * **solution_alt** (`string`) : intitulé complet de la solution (si celle-ci n'est pas normalisée et comprise dans la taxonomie)
   * **titling** (`array`) : liste des éléments de titrage par ordre de maillons (texte brut)
   * **summary** (`string`) : sommaire (texte brut)
+  * **attachments** (`array`) : liste des documents associés à la décision, chaque document étant représenté par un objet `{ type, URL }` où `type` contient le type de document (communiqué, note explicative, traduction, rapport, avis de l'avocat général, etc.) et `URL` contient le lien vers celui-ci
 
 Rappel : le texte intégral et les zones qu'il contient ne sont pas inclus dans les résultats de la recherche. La récupération d'une décision complète (incluant les zones) repose sur le point d'entrée `GET /decision`.
 
@@ -226,7 +227,6 @@ Connaissant l'identifiant unique d'une décision, ce point d'entrée permet d'en
 * Ses visas
 * Ses documents associés (communiqué, note explicative, traduction, rapport, avis de l'avocat général, etc.)
 * Les textes appliqués
-* Les rapprochements de jurisprudence
 
 Certaines des informations ne sont retournées que sous forme de clé ou d'identifiant numérique (juridiction, chambre, niveau de publication, etc.). Il convient dès lors d'utiliser le point d'entrée `GET /taxonomy` pour en récupérer l'intitulé complet, ou d'effectuer la requête en utilisant le paramètre `resolve_references=true`.
 
@@ -241,16 +241,16 @@ Certaines des informations ne sont retournées que sous forme de clé ou d'ident
 Une requête réussie retourne un objet contenant les propriétés suivantes :
 
 * **id** (`string`) : identifiant de la décision ;
-* **jurisdiction** (`string`) : clé de la juridiction. Par défaut, utiliser `GET $API/taxonomy?id=jurisdiction&key=$jurisdiction` pour récupérer l'intitulé complet de celle-ci. Si la requête utilise `resolve_references=true`, alors cette propriété est retournée sous la forme d'un objet `{ key, value }`, où  `key` contient la clé et `value` contient l'intitulé complet de celle-ci
-* **chamber** (`string`) : clé de la chambre. Par défaut, utiliser `GET $API/taxonomy?id=chamber&context_value=$jurisdiction&key=$chamber` pour récupérer l'intitulé complet de celle-ci. Si la requête utilise `resolve_references=true`, alors cette propriété est retournée sous la forme d'un objet `{ key, value }`, où  `key` contient la clé et `value` contient l'intitulé complet de celle-ci
+* **jurisdiction** (`string`) : clé de la juridiction. Par défaut, utiliser `GET $API/taxonomy?id=jurisdiction&key=$jurisdiction` pour récupérer l'intitulé complet de celle-ci. Si la requête utilise `resolve_references=true`, alors cette propriété est retournée sous la forme d'un objet `{ key, value }`, où `key` contient la clé et `value` contient l'intitulé complet de celle-ci
+* **chamber** (`string`) : clé de la chambre. Par défaut, utiliser `GET $API/taxonomy?id=chamber&context_value=$jurisdiction&key=$chamber` pour récupérer l'intitulé complet de celle-ci. Si la requête utilise `resolve_references=true`, alors cette propriété est retournée sous la forme d'un objet `{ key, value }`, où `key` contient la clé et `value` contient l'intitulé complet de celle-ci
 * **number** (`string`) : numéro de pourvoi de la décision
 * **ecli** (`string`) : code ECLI de la décision
 * **nac** (`string`) : code NAC de la décision
-* **formation** (`string`) : clé de la formation. Par défaut, utiliser `GET $API/taxonomy?id=formation&context_value=$jurisdiction&key=$formation` pour récupérer l'intitulé complet de celle-ci. Si la requête utilise `resolve_references=true`, alors cette propriété est retournée sous la forme d'un objet `{ key, value }`, où  `key` contient la clé et `value` contient l'intitulé complet de celle-ci
-* **publication** (`string`) : clé du niveau de publication. Par défaut, utiliser `GET $API/taxonomy?id=publication&context_value=$jurisdiction&key=$publication` pour récupérer le nom de celui-ci. Si la requête utilise `resolve_references=true`, alors cette propriété est retournée sous la forme d'un objet `{ key, value }`, où  `key` contient la clé et `value` contient l'intitulé complet de celle-ci
+* **formation** (`string`) : clé de la formation. Par défaut, utiliser `GET $API/taxonomy?id=formation&context_value=$jurisdiction&key=$formation` pour récupérer l'intitulé complet de celle-ci. Si la requête utilise `resolve_references=true`, alors cette propriété est retournée sous la forme d'un objet `{ key, value }`, où `key` contient la clé et `value` contient l'intitulé complet de celle-ci
+* **publication** (`string`) : clé du niveau de publication. Par défaut, utiliser `GET $API/taxonomy?id=publication&context_value=$jurisdiction&key=$publication` pour récupérer le nom de celui-ci. Si la requête utilise `resolve_references=true`, alors cette propriété est retournée sous la forme d'un objet `{ key, value }`, où `key` contient la clé et `value` contient l'intitulé complet de celle-ci
 * **creation_date** (`date au format dd/mm/yyy`) : date de création de la décision
 * **update_date** (`date au format dd/mm/yyy`) : date de dernière mise à jour de la décision
-* **solution** (`string`) : clé de la solution. Par défaut, utiliser `GET $API/taxonomy?id=solution&context_value=$jurisdiction&key=$solution` pour récupérer l'intitulé complet de celle-ci. Si la requête utilise `resolve_references=true`, alors cette propriété est retournée sous la forme d'un objet `{ key, value }`, où  `key` contient la clé et `value` contient l'intitulé complet de celle-ci
+* **solution** (`string`) : clé de la solution. Par défaut, utiliser `GET $API/taxonomy?id=solution&context_value=$jurisdiction&key=$solution` pour récupérer l'intitulé complet de celle-ci. Si la requête utilise `resolve_references=true`, alors cette propriété est retournée sous la forme d'un objet `{ key, value }`, où `key` contient la clé et `value` contient l'intitulé complet de celle-ci
 * **solution_alt** (`string`) : intitulé complet de la solution (si celle-ci n'est pas normalisée et comprise dans la taxonomie)
 * **text** (`string`): texte intégral et pseudonymisé de la décision (texte brut)
 * **zones** (`object`) : objet définissant les différentes zones détectées dans le texte intégral de la décision. Chaque zone contient une liste d'objets `{ start, end }` indiquant respectivement l'indice de début et de fin des caractères (relativement au texte intégral) contenus dans chaque segment de la zone (une zone pouvant contenir plusieurs segments) :
@@ -262,6 +262,10 @@ Une requête réussie retourne un objet contenant les propriétés suivantes :
   * `annexes` : moyens annexés
 * **titling** (`array`) : liste des éléments de titrage par ordre de maillons (texte brut)
 * **summary** (`string`) : sommaire (texte brut)
+* **attachments** (`array`) : liste des documents associés à la décision, chaque document étant représenté par un objet `{ type, description, URL }` où `type` contient le type de document (communiqué, note explicative, traduction, rapport, avis de l'avocat général, etc.), `description` la description spécifique du document et `URL` contient le lien vers celui-ci
+* **bulletin** (`string`) : numéro de publication au bulletin
+* **visas** (`array`) : liste des visas associés à la décision, chaque visa étant représenté par un objet `{ number, description, titling, URL }` où `number` contient le numéro de pourvoi, `description` le court texte descriptif destiné à être affiché à côté de la décision, `titling` la liste de ses éléments de titrage et `URL` contient le lien vers la décision
+* **applied** (`array`) : liste des textes appliqués par la décision, chaque texte étant représenté par un objet `{ title, URL }` où `title` contient l'intitulé du texte et `URL` contient le lien vers celui-ci
 
 ## Taxonomie : `GET /taxonomy`
 
