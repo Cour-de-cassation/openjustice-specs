@@ -201,7 +201,7 @@ Une requête réussie retourne un objet contenant une liste de résultats ainsi 
   * **titling** (`array`) : liste des éléments de titrage par ordre de maillons (texte brut)
   * **summary** (`string`) : sommaire (texte brut)
 
-*Note : le texte intégral et les zones qu'il contient ne sont pas inclus dans les résultats de la recherche.*
+Rappel : le texte intégral et les zones qu'il contient ne sont pas inclus dans les résultats de la recherche. La récupération d'une décision complète (incluant les zones) repose sur le point d'entrée `GET /decision`.
 
 ## Récupération d'une décision complète : `GET /decision`
 
@@ -232,37 +232,40 @@ Certaines des informations ne sont retournées que sous forme de clé ou d'ident
 
 ### Paramètres de la requête
 
-* **id** (`string`) : identifiant de la décision à récupérer
+* **id** (`string`) : identifiant de la décision à récupérer (**obligatoire**)
 * **resolve_references** (`boolean`) : lorsque ce paramètre vaut `true`, le résultat de la requête contiendra, pour chaque information retournée par défaut sous forme de clé, l'intitulé complet de celle-ci (vaut `false` par défaut)
+* **query** (`object`) : objet facultatif contenant les paramètres complets d'une requête de recherche, tel qu'il est retourné en résultat de `GET /search`. Ce paramètre est utilisé pour surligner en retour, dans le texte intégral de la décision, les termes correspondant avec la recherche (ces termes étant délimitées par des balises `<em>`)
 
 ### Format du résultat
 
 Une requête réussie retourne un objet contenant les propriétés suivantes :
 
-* id (string) : identifiant de la décision ;
-* jurisdiction (string) : clé de la juridiction (utiliser GET /taxonomy?id=jurisdiction&key=<clé jurisdiction> pour récupérer le nom de celle-ci) ;
-* chamber (string) : clé de la chambre (utiliser GET /taxonomy?id=chamber& context_value=<clé jurisdiction>&key=<clé chamber> pour récupérer le nom de celle-ci) ;
-* number (string) : numéro de pourvoi de la décision ;
-* ecli (string) : code ECLI de la décision ;
-* nac (string) : code NAC de la décision ;
-* formation (string) : clé de la formation (utiliser GET /taxonomy?id=formation& context_value=<clé jurisdiction>&key=<clé formation> pour récupérer le nom de celle-ci) ;
-* publication (string) : clé du niveau de publication (utiliser GET /taxonomy?id=publication& context_value=<clé jurisdiction>&key=<clé publication> pour récupérer le nom de celui-ci) ;
-* creation_date (date dd/mm/yyyy) : date de création de la décision ;
-* update_date (date dd/mm/yyyy) : date de dernière mise à jour de la décision ;
-* solution (string) : clé de la solution (utiliser GET /taxonomy?id=solution& context_value=<clé jurisdiction>&key=<clé solution > pour récupérer le nom de celle-ci) ;
-* solution_alt (string) : valeur de la solution (si celle-ci n'est pas normalisée et comprise dans la taxonomie) ;
-* text (string): texte intégral et pseudonymisé de la décision (texte brut) ;
-* zones (object) : objet définissant les différentes zones détectées dans le texte intégral de la décision. Chaque zone contient une liste d'objets { start, end } indiquant respectivement l'indice de début et de fin des caractères (relativement au texte intégral) contenus dans chaque segment de la zone (une zone pouvant contenir plusieurs segments) :
-* introduction : introduction de la décision ;
-* expose : exposé du litige ;
-* moyens : moyens ;
-* motivations : motivations ;
-* dispositif : dispositifs ;
-* annexes : moyens annexés.
-* titling (array) : liste des éléments de titrage par ordre de maillons (texte brut) ;
-* summary (string) : sommaire (texte brut).
+* **id** (`string`) : identifiant de la décision ;
+* **jurisdiction** (`string`) : clé de la juridiction. Par défaut, utiliser `GET $API/taxonomy?id=jurisdiction&key=$jurisdiction` pour récupérer l'intitulé complet de celle-ci. Si la requête utilise `resolve_references=true`, alors cette propriété est retournée sous la forme d'un objet `{ key, value }`, où  `key` contient la clé et `value` contient l'intitulé complet de celle-ci
+* **chamber** (`string`) : clé de la chambre. Par défaut, utiliser `GET $API/taxonomy?id=chamber&context_value=$jurisdiction&key=$chamber` pour récupérer l'intitulé complet de celle-ci. Si la requête utilise `resolve_references=true`, alors cette propriété est retournée sous la forme d'un objet `{ key, value }`, où  `key` contient la clé et `value` contient l'intitulé complet de celle-ci
+* **number** (`string`) : numéro de pourvoi de la décision
+* **ecli** (`string`) : code ECLI de la décision
+* **nac** (`string`) : code NAC de la décision
+* **formation** (`string`) : clé de la formation. Par défaut, utiliser `GET $API/taxonomy?id=formation&context_value=$jurisdiction&key=$formation` pour récupérer l'intitulé complet de celle-ci. Si la requête utilise `resolve_references=true`, alors cette propriété est retournée sous la forme d'un objet `{ key, value }`, où  `key` contient la clé et `value` contient l'intitulé complet de celle-ci
+* **publication** (`string`) : clé du niveau de publication. Par défaut, utiliser `GET $API/taxonomy?id=publication&context_value=$jurisdiction&key=$publication` pour récupérer le nom de celui-ci. Si la requête utilise `resolve_references=true`, alors cette propriété est retournée sous la forme d'un objet `{ key, value }`, où  `key` contient la clé et `value` contient l'intitulé complet de celle-ci
+* **creation_date** (`date au format dd/mm/yyy`) : date de création de la décision
+* **update_date** (`date au format dd/mm/yyy`) : date de dernière mise à jour de la décision
+* **solution** (`string`) : clé de la solution. Par défaut, utiliser `GET $API/taxonomy?id=solution&context_value=$jurisdiction&key=$solution` pour récupérer l'intitulé complet de celle-ci. Si la requête utilise `resolve_references=true`, alors cette propriété est retournée sous la forme d'un objet `{ key, value }`, où  `key` contient la clé et `value` contient l'intitulé complet de celle-ci
+* **solution_alt** (`string`) : intitulé complet de la solution (si celle-ci n'est pas normalisée et comprise dans la taxonomie)
+* **text** (`string`): texte intégral et pseudonymisé de la décision (texte brut)
+* **zones** (`object`) : objet définissant les différentes zones détectées dans le texte intégral de la décision. Chaque zone contient une liste d'objets `{ start, end }` indiquant respectivement l'indice de début et de fin des caractères (relativement au texte intégral) contenus dans chaque segment de la zone (une zone pouvant contenir plusieurs segments) :
+  * `introduction` : introduction de la décision
+  * `expose` : exposé du litige
+  * `moyens` : moyens
+  * `motivations` : motivations
+  * `dispositif` : dispositifs
+  * `annexes` : moyens annexés
+* **titling** (`array`) : liste des éléments de titrage par ordre de maillons (texte brut)
+* **summary** (`string`) : sommaire (texte brut)
 
-### 2.3. Taxonomie : `GET /taxonomy`
+## Taxonomie : `GET /taxonomy`
+
+### Description
 
 En complément, l'API publique propose la récupération des listes des termes (sous la forme d'un couple clé/valeur) constituants les différents critères et filtres pris en compte par le processus de recherche et les données qu'il restitue, notamment :
 
@@ -278,7 +281,9 @@ En complément, l'API publique propose la récupération des listes des termes (
 
 La publication de cette taxonomie permettra principalement au prestataire chargé de l'implémentation du frontend (ainsi qu'à certains réutilisateurs avancés) d'automatiser la constitution du formulaire de recherche et l'enrichissement des résultats retournés. 
 
-### 2.4. Statistiques : `GET /stats`
+## Statistiques : `GET /stats`
+
+### Description
 
 L'API publiera notamment les statistiques suivantes, mises à jour quotidiennement :
 
@@ -286,7 +291,9 @@ L'API publiera notamment les statistiques suivantes, mises à jour quotidienneme
 * Nombre de requêtes (par jour, par semaine, etc.) ;
 * Date de la décision la plus ancienne, date de la décision la plus récente.
 
-### 2.5. Export par lots : `GET /export`
+## Export par lots : `GET /export`
+
+### Description
 
 Destiné aux utilisateurs désirant procéder à leur propre indexation et mise à disposition du contenu, ce point d'entrée leur permet de récupérer des lots de décisions complètes suivant des paramètres et critères simples :
 
@@ -302,13 +309,17 @@ Destiné aux utilisateurs désirant procéder à leur propre indexation et mise 
 
 L'export par lots est limité par défaut à 100 résultats par lot, pour un maximum de 10 000 résultats au total.
 
-### 2.6. Import par lots : `POST/PUT/DELETE /import`
+## Import par lots : `POST/PUT/DELETE /import`
+
+### Description
 
 L'API OpenJustice possède en outre une interface privée et sécurisée destinée à alimenter le contenu de la base Open Data à partir des données pseudonymisées issues de la base documentaire interne de la Cour de cassation.
 
 Cette interface, à l'usage exclusif de la Cour de cassation, permet l'indexation par lots dans Elasticsearch des décisions de justice pseudonymisées (nouvelles ou mises à jour) en vue de leur publication via le moteur de recherche.
 
-### 2.7. Administration : `GET/POST/PUT/DELETE /admin`
+## Administration : `GET/POST/PUT/DELETE /admin`
+
+### Description
 
 Enfin l'API OpenJustice possède une seconde interface privée et sécurisée, elle aussi à l'usage exclusif de la Cour de cassation, destinée à l'administration et à la maintenance du dispositif (concernant essentiellement la récupération de son état et de son historique de fonctionnement).
 
