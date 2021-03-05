@@ -352,6 +352,14 @@ L'API publiera notamment les statistiques suivantes, mises à jour quotidienneme
 * Nombre de requêtes (par jour, par semaine, etc.)
 * Date de la décision la plus ancienne, date de la décision la plus récente.
 
+### Paramètres de la requête
+
+`TODO`
+
+### Format du résultat
+
+`TODO`
+
 ## Export par lots : `GET /export`
 
 ### Description
@@ -370,6 +378,20 @@ Destiné aux utilisateurs désirant procéder à leur propre indexation et mise 
 
 L'export par lots est limité par défaut à 100 résultats par lot, pour un maximum de 10 000 résultats au total.
 
+### Paramètres de la requête
+
+`TODO`
+
+### Format du résultat
+
+Une requête réussie retourne un objet contenant une liste de décisions, chaque décision étant un objet similaire à celui retourné par une requête `GET /decision` :
+
+* **offset** (`integer`) : numéro du lot courant (le premier lot ayant un offset valant 0)
+* **size** (`integer`) : nombre de résultats retournés par lot
+* **query** (`object`) : objet contenant les paramètres de la requête originelle (voir 3.2.5)
+* **total** (`integer`) : nombre total de décisions retournées par la requête
+* **decisions** (`array`) : liste des décisions retournées.
+
 ## Import par lots : `POST/PUT/DELETE /import`
 
 ### Description
@@ -378,19 +400,24 @@ L'API OpenJustice possède en outre une interface privée et sécurisée destin�
 
 Cette interface, à l'usage exclusif de la Cour de cassation, permet l'indexation par lots dans Elasticsearch des décisions de justice pseudonymisées (nouvelles ou mises à jour) en vue de leur publication via le moteur de recherche.
 
+### Paramètres de la requête
+
+`TODO`
+
+### Format du résultat
+
+`TODO`
+
 ## Administration : `GET/POST/PUT/DELETE /admin`
 
 ### Description
 
 Enfin l'API OpenJustice possède une seconde interface privée et sécurisée, elle aussi à l'usage exclusif de la Cour de cassation, destinée à l'administration et à la maintenance du dispositif (concernant essentiellement la récupération de son état et de son historique de fonctionnement).
 
-3.3.5 GET /export
+### Paramètres de la requête
 
-Une requête réussie retourne un objet contenant une liste de décisions, chaque décision étant un objet similaire à celui retourné par une requête GET /decision.
+`TODO`
 
-Propriétés de l'objet retourné :
-offset (integer) : numéro du lot courant (le premier lot ayant un offset valant 0)
-size (integer) : nombre de résultats retournés par lot
-query (object) : objet contenant les paramètres de la requête originelle (voir 3.2.5)
-total (integer) : nombre total de décisions retournées par la requête
-decisions (array) : liste des décisions retournées (voir 3.3.2).
+### Format du résultat
+
+`TODO`
