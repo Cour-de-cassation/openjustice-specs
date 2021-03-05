@@ -51,7 +51,7 @@ Outre la sécurisation de l'API, l'utilisation du format JWT permettra ainsi d'i
 
 Les spécifications de la version JWT de l'API, découlant des spécification du format "query string" de base, sont encore en cours de finalisation et ne seront donc pas détaillées dans la présente version du document.
 
-Les sections suivantes décrivent les paramètres disponibles pour les différentes interfaces de l'API, lesquels sont attendus au format "query string" correctement encodé (par exemple : `GET $API/search?query=petit%20exemple&fields%5B%5D=expose&fields%5B%5D=moyens&sort=date&order=asc`).
+Les sections suivantes décrivent les paramètres disponibles pour les différentes interfaces de l'API, lesquels sont attendus au format "query string" correctement encodé (par exemple : `GET $API/search?query=petit%20exemple&field%5B%5D=expose&field%5B%5D=moyens&sort=date&order=asc`).
 
 ### Formats de données
 
@@ -85,7 +85,7 @@ Par exemple:
 
 ```
 {
-    "results": [{...}, {...}],
+    "result": [{...}, {...}],
     "page": 0,
     "page_size": 10,
     "total": 20,
@@ -154,9 +154,9 @@ La récupération d'une décision complète repose sur le point d'entrée `GET /
 ### Paramètres de la requête
 
 * **query** (`string`) : la chaîne de caractères correspondant à la recherche (le support du format "simple query" tel qu'il est implémenté par Elasticsearch est envisagé). Une recherche avec un paramètre `query` vide est ignorée et retourne un résultat vide
-* **fields** (`array`) : la liste des champs, métadonnées ou zones de contenu ciblés par la recherche (parmi les valeurs : `expose`, `moyens`, `motivations`, `dispositif`, `annexes`, `sommaire`, `titrage`, etc.). Une recherche avec un paramètre `fields` vide est appliquée à l'intégralité de la décision (introduction et moyens annexés compris) mais va exclure les métadonnées (sommaire, titrage, etc.)
+* **field** (`array`) : la liste des champs, métadonnées ou zones de contenu ciblés par la recherche (parmi les valeurs : `expose`, `moyens`, `motivations`, `dispositif`, `annexes`, `sommaire`, `titrage`, etc. - les valeurs disponibles sont accessibles via `GET $API/taxonomy?id=field`). Une recherche avec un paramètre `field` vide est appliquée à l'intégralité de la décision (introduction et moyens annexés compris) mais va exclure les métadonnées (sommaire, titrage, etc.)
 * **operator** (`string`) : l'opérateur logique reliant les multiples termes que le paramètre `query` peut contenir (`or` par défaut, `and` ou `exact` – dans ce dernier cas le moteur recherchera exactement le contenu du paramètre `query`)
-* **type** (`array`) : filtre les résultats suivant la natures des décisions (parmi les valeurs : `arret`, `qpc`, `qpj`, `ordonnance`, `saisie`). Une recherche avec un paramètre `type` vide retourne des décisions de toutes natures
+* **type** (`array`) : filtre les résultats suivant la natures des décisions (parmi les valeurs : `arret`, `qpc`, `qpj`, `ordonnance`, `saisie`, etc. - les valeurs disponibles sont accessibles via `GET $API/taxonomy?id=type`). Une recherche avec un paramètre `type` vide retourne des décisions de toutes natures
 * **theme** (`array`) : filtre les résultats suivant la matière (nomenclature de la Cour de cassation) relative aux décisions (les valeurs disponibles sont accessibles via `GET $API/taxonomy?id=theme`). Une recherche avec un paramètre `theme` vide retourne des décisions relatives à toutes les matières
 * **chamber** (`array`) : filtre les résultats suivant la chambre relative aux décisions (les valeurs disponibles sont accessibles via `GET $API/taxonomy?id=chamber`). Une recherche avec un paramètre `chamber` vide retourne des décisions relatives à toutes les chambres
 * **formation** (`array`) : filtre les résultats suivant la formation relative aux décisions (les valeurs disponibles sont accessibles via `GET $API/taxonomy?id=formation`). Une recherche avec un paramètre `formation` vide retourne des décisions relatives à toutes les formations
@@ -183,7 +183,7 @@ Une requête réussie retourne un objet contenant une liste de résultats ainsi 
 * **previous_page** (`string`) : URL de la page de résultats précédente (vaut `null` si la page courante est la première)
 * **took** (`integer`) : temps d'exécution de la requête (en millisecondes)
 * **max_score** (`float`) : score maximal obtenu sur l'ensemble des résultats
-* **results** (`array`) : liste des résultats retournés, chaque résultat étant un objet contenant les propriétés suivantes :
+* **result** (`array`) : liste des résultats retournés, chaque résultat étant un objet contenant les propriétés suivantes :
   * **id** (`string`) : identifiant de la décision
   * **score** (`float`) : score de la décision
   * **highlight** (`array`) : liste des segments de la décision ayant des correspondances avec la requête saisie, les correspondances étant délimitées par des balises `<em>`. Chaque segment est un objet contenant les propriétés suivantes :
@@ -198,9 +198,9 @@ Une requête réussie retourne un objet contenant une liste de résultats ainsi 
   * **creation_date** (`date au format dd/mm/yyy`) : date de création de la décision
   * **solution** (`string`) : clé de la solution. Par défaut, utiliser `GET $API/taxonomy?id=solution&context_value=$jurisdiction&key=$solution` pour récupérer l'intitulé complet de celle-ci. Si la requête utilise `resolve_references=true`, alors cette propriété est retournée sous la forme d'un objet `{ key, value }`, où `key` contient la clé et `value` contient l'intitulé complet de celle-ci
   * **solution_alt** (`string`) : intitulé complet de la solution (si celle-ci n'est pas normalisée et comprise dans la taxonomie)
-  * **titling** (`array`) : liste des éléments de titrage par ordre de maillons (texte brut)
+  * **theme** (`array`) : liste des matières (ou éléments de titrage) par ordre de maillons (texte brut)
   * **summary** (`string`) : sommaire (texte brut)
-  * **attachments** (`array`) : liste des documents associés à la décision, chaque document étant représenté par un objet `{ type, URL }` où `type` contient le type de document (communiqué, note explicative, traduction, rapport, avis de l'avocat général, etc.) et `URL` contient le lien vers celui-ci
+  * **attachment** (`array`) : liste des documents associés à la décision, chaque document étant représenté par un objet `{ type, URL }` où `type` contient le type de document (communiqué, note explicative, traduction, rapport, avis de l'avocat général, etc.) et `URL` contient le lien vers celui-ci
 
 Rappel : le texte intégral et les zones qu'il contient ne sont pas inclus dans les résultats de la recherche. La récupération d'une décision complète (incluant les zones) repose sur le point d'entrée `GET /decision`.
 
@@ -240,7 +240,7 @@ Certaines des informations ne sont retournées que sous forme de clé ou d'ident
 
 Une requête réussie retourne un objet contenant les propriétés suivantes :
 
-* **id** (`string`) : identifiant de la décision ;
+* **id** (`string`) : identifiant de la décision
 * **jurisdiction** (`string`) : clé de la juridiction. Par défaut, utiliser `GET $API/taxonomy?id=jurisdiction&key=$jurisdiction` pour récupérer l'intitulé complet de celle-ci. Si la requête utilise `resolve_references=true`, alors cette propriété est retournée sous la forme d'un objet `{ key, value }`, où `key` contient la clé et `value` contient l'intitulé complet de celle-ci
 * **chamber** (`string`) : clé de la chambre. Par défaut, utiliser `GET $API/taxonomy?id=chamber&context_value=$jurisdiction&key=$chamber` pour récupérer l'intitulé complet de celle-ci. Si la requête utilise `resolve_references=true`, alors cette propriété est retournée sous la forme d'un objet `{ key, value }`, où `key` contient la clé et `value` contient l'intitulé complet de celle-ci
 * **number** (`string`) : numéro de pourvoi de la décision
@@ -260,12 +260,12 @@ Une requête réussie retourne un objet contenant les propriétés suivantes :
   * `motivations` : motivations
   * `dispositif` : dispositifs
   * `annexes` : moyens annexés
-* **titling** (`array`) : liste des éléments de titrage par ordre de maillons (texte brut)
+* **theme** (`array`) : liste des matières (ou éléments de titrage) par ordre de maillons (texte brut)
 * **summary** (`string`) : sommaire (texte brut)
-* **attachments** (`array`) : liste des documents associés à la décision, chaque document étant représenté par un objet `{ type, description, URL }` où `type` contient le type de document (communiqué, note explicative, traduction, rapport, avis de l'avocat général, etc.), `description` la description spécifique du document et `URL` contient le lien vers celui-ci
+* **attachment** (`array`) : liste des documents associés à la décision, chaque document étant représenté par un objet `{ type, description, URL }` où `type` contient le type de document (communiqué, note explicative, traduction, rapport, avis de l'avocat général, etc.), `description` la description spécifique du document et `URL` contient le lien vers celui-ci
 * **bulletin** (`string`) : numéro de publication au bulletin
 * **applied** (`array`) : liste des textes appliqués par la décision, chaque texte étant représenté par un objet `{ title, URL }` où `title` contient l'intitulé du texte et `URL` contient le lien vers celui-ci
-* **linked** (`array`) : liste des rapprochements de jurisprudence, chaque rapprochement étant représenté par un objet décrivant une décision `{ number, description, titling, URL }` où `number` contient son numéro de pourvoi, `description` son court texte descriptif, `titling` la liste de ses éléments de titrage et `URL` le lien vers celle-ci
+* **linked** (`array`) : liste des rapprochements de jurisprudence, chaque rapprochement étant représenté par un objet décrivant une décision `{ number, description, theme, URL }` où `number` contient son numéro de pourvoi, `description` son court texte descriptif, `theme` la liste de ses matières (ou éléments de titrage) et `URL` le lien vers celle-ci
 
 ## Taxonomie : `GET /taxonomy`
 
@@ -273,18 +273,69 @@ Une requête réussie retourne un objet contenant les propriétés suivantes :
 
 En complément, l'API publique propose la récupération des listes des termes (sous la forme d'un couple clé/valeur) constituants les différents critères et filtres pris en compte par le processus de recherche et les données qu'il restitue, notamment :
 
-* La liste des natures de décision
-* La liste des juridictions dont le système intègre les décisions
-* La liste des chambres
-* La liste des formations
-* La liste des commissions
-* La liste des niveaux de publication
-* La liste des matières
-* La liste des solutions
-* La liste des contenus des décisions pouvant être ciblés par la recherche
+* La liste des types de décision (`type`)
+* La liste des juridictions dont le système intègre les décisions (`jurisdiction`)
+* La liste des chambres (`chamber`)
+* La liste des formations (`formation`)
+* La liste des commissions (`committee`)
+* La liste des niveaux de publication (`publication`)
+* La liste des matières (`theme`)
+* La liste des solutions (`solution`)
+* La liste des champs et des zones de contenu des décisions pouvant être ciblés par la recherche (`field`)
 * etc.
 
-La publication de cette taxonomie permettra principalement au prestataire chargé de l'implémentation du frontend (ainsi qu'à certains réutilisateurs avancés) d'automatiser la constitution du formulaire de recherche et l'enrichissement des résultats retournés. 
+La publication de cette taxonomie permettra principalement au prestataire chargé de l'implémentation du frontend (ainsi qu'à certains réutilisateurs avancés) d'automatiser la constitution du formulaire de recherche et l'enrichissement des résultats retournés.
+
+### Paramètres de la requête
+
+* **id** (`string`) : identifiant de l'entrée de taxonomie à interroger (`type`, `jurisdiction`, `chamber`, etc. - les valeurs disponibles sont accessibles via `GET $API/taxonomy`)
+
+### Format du résultat
+
+Une requête réussie retourne un objet contenant les propriétés suivantes :
+
+* **id** (`string`) : identifiant de l'entrée de taxonomie interrogée
+
+Une requête réussie retourne un objet contenant une liste de couples clé/valeur (appel par `id` seul), ou seulement une clé ou une valeur (appel par `key` ou `value`), par exemple :
+
+`GET $API/taxonomy?id=publication` :
+
+```
+{
+	"id": "publication",
+	"result": {
+		"nonpub": "Non publié",
+		"bulletin": "Au Bulletin",
+		"lettre": "Lettre de chambre",
+		"rapport": "Au Rapport",
+		"c": "Publié C",
+	}
+}
+```
+
+`GET $API/taxonomy?id=publication&key=c` :
+
+```
+{
+	"id": "publication",
+	"key": "c",
+	"result": {
+		"value": "Publié C",
+	}
+}
+```
+
+`GET $API/taxonomy?id=publication&value=Publi%C3%A9%20C` :
+
+```
+{
+	"id": "publication",
+	"value": "Publié C",
+	"result": {
+		"key": "c",
+	}
+}
+```
 
 ## Statistiques : `GET /stats`
 
@@ -292,8 +343,8 @@ La publication de cette taxonomie permettra principalement au prestataire charg�
 
 L'API publiera notamment les statistiques suivantes, mises à jour quotidiennement :
 
-* Nombre de décisions indexées (au total, par année, par juridiction) ;
-* Nombre de requêtes (par jour, par semaine, etc.) ;
+* Nombre de décisions indexées (au total, par année, par juridiction)
+* Nombre de requêtes (par jour, par semaine, etc.)
 * Date de la décision la plus ancienne, date de la décision la plus récente.
 
 ## Export par lots : `GET /export`
@@ -302,14 +353,14 @@ L'API publiera notamment les statistiques suivantes, mises à jour quotidienneme
 
 Destiné aux utilisateurs désirant procéder à leur propre indexation et mise à disposition du contenu, ce point d'entrée leur permet de récupérer des lots de décisions complètes suivant des paramètres et critères simples :
 
-* Nature de décision (filtre) ;
-* Matière (filtre) ;
-* Chambre et formation (filtre) ;
-* Juridiction et commission (filtre) ;
-* Niveau de publication (filtre) ;
-* Type de solution (filtre) ;
-* Intervalle de dates (date de création ou de mise à jour) (filtre) ;
-* Date (tri) ;
+* Nature de décision (filtre)
+* Matière (filtre)
+* Chambre et formation (filtre)
+* Juridiction et commission (filtre)
+* Niveau de publication (filtre)
+* Type de solution (filtre)
+* Intervalle de dates (date de création ou de mise à jour) (filtre)
+* Date (tri)
 * Nombre de décisions par lot, index du lot (navigation).
 
 L'export par lots est limité par défaut à 100 résultats par lot, pour un maximum de 10 000 résultats au total.
@@ -328,62 +379,13 @@ Cette interface, à l'usage exclusif de la Cour de cassation, permet l'indexatio
 
 Enfin l'API OpenJustice possède une seconde interface privée et sécurisée, elle aussi à l'usage exclusif de la Cour de cassation, destinée à l'administration et à la maintenance du dispositif (concernant essentiellement la récupération de son état et de son historique de fonctionnement).
 
-3.3.3 GET /taxonomy
-
-Une requête réussie retourne un objet contenant une liste de couples clé/valeur (appel par id seul), ou seulement une clé ou une valeur (appel par key ou value), par exemple :
-
-GET /taxonomy?id=publication :
-{
-	"success": true,
-	"id": "publication",
-	"result": {
-		"nonpub": "Non publié",
-		"bulletin": "Au Bulletin",
-		"lettre": "Lettre de chambre",
-		"rapport": "Au Rapport",
-		"c": "Publié C",
-	}
-}
-
-GET /taxonomy?id=publication&key=c :
-{
-	"success": true,
-	"id": "publication",
-	"key": "c",
-	"result": {
-		"value": "Publié C",
-	}
-}
-
-GET /taxonomy?id=publication&value=Publi%C3%A9%20C :
-{
-	"success": true,
-	"id": "publication",
-	"value": "Publié C",
-	"result": {
-		"key": "c",
-	}
-}
-
-À compléter.
-
-3.3.4 GET /stats
-
-À compléter.
-
 3.3.5 GET /export
 
 Une requête réussie retourne un objet contenant une liste de décisions, chaque décision étant un objet similaire à celui retourné par une requête GET /decision.
 
 Propriétés de l'objet retourné :
-offset (integer) : numéro du lot courant (le premier lot ayant un offset valant 0) ;
-size (integer) : nombre de résultats retournés par lot ;
-query (object) : objet contenant les paramètres de la requête originelle (voir 3.2.5) ;
-total (integer) : nombre total de décisions retournées par la requête ;
+offset (integer) : numéro du lot courant (le premier lot ayant un offset valant 0)
+size (integer) : nombre de résultats retournés par lot
+query (object) : objet contenant les paramètres de la requête originelle (voir 3.2.5)
+total (integer) : nombre total de décisions retournées par la requête
 decisions (array) : liste des décisions retournées (voir 3.3.2).
-
-3.4. Hébergement et disponibilité
-
-L'API OpenJustice sera hébergée au sein de l'infrastructure technique du ministère de la Justice, dans un environnement virtualisé (Red Hat Enterprise) bénéficiant d'une connexion directe et sécurisée au RPVJ (réseau interne au ministère de la Justice, dans lequel sont notamment archivées les décisions intègres et où le processus de pseudonymisation est mis en œuvre). 
-
-À compléter.
