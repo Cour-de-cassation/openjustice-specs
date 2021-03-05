@@ -130,7 +130,7 @@ L'API publique permet en premier lieu d'effectuer une recherche sur la base de d
 
 * Texte en saisie libre, lequel sera mis en correspondance avec tout ou partie du contenu des décisions
 * Le mode de mise en rapport des termes de la recherche (*ou*, *et*, expression exacte)
-* Contenu ciblé par la recherche : décision intégrale, zones spécifiques de la décision (exposé du litige, moyens, motivations, dispositif), sommaire, titrages, numéro de pourvoi, visas, etc.
+* Contenu ciblé par la recherche : décision intégrale, zones spécifiques de la décision (exposé du litige, moyens, motivations, dispositif), sommaire, titrages, numéro de pourvoi, etc.
 * Nature de décision (filtre)
 * Matière (filtre)
 * Chambre et formation (filtre)
@@ -154,7 +154,7 @@ La récupération d'une décision complète repose sur le point d'entrée `GET /
 ### Paramètres de la requête
 
 * **query** (`string`) : la chaîne de caractères correspondant à la recherche (le support du format "simple query" tel qu'il est implémenté par Elasticsearch est envisagé). Une recherche avec un paramètre `query` vide est ignorée et retourne un résultat vide
-* **fields** (`array`) : la liste des champs, métadonnées ou zones de contenu ciblés par la recherche (parmi les valeurs : `expose`, `moyens`, `motivations`, `dispositif`, `annexes`, `sommaire`, `titrage`, `visas`, etc.). Une recherche avec un paramètre `fields` vide est appliquée à l'intégralité de la décision (introduction et moyens annexés compris) mais va exclure les métadonnées (sommaire, titrage, etc.)
+* **fields** (`array`) : la liste des champs, métadonnées ou zones de contenu ciblés par la recherche (parmi les valeurs : `expose`, `moyens`, `motivations`, `dispositif`, `annexes`, `sommaire`, `titrage`, etc.). Une recherche avec un paramètre `fields` vide est appliquée à l'intégralité de la décision (introduction et moyens annexés compris) mais va exclure les métadonnées (sommaire, titrage, etc.)
 * **operator** (`string`) : l'opérateur logique reliant les multiples termes que le paramètre `query` peut contenir (`or` par défaut, `and` ou `exact` – dans ce dernier cas le moteur recherchera exactement le contenu du paramètre `query`)
 * **type** (`array`) : filtre les résultats suivant la natures des décisions (parmi les valeurs : `arret`, `qpc`, `qpj`, `ordonnance`, `saisie`). Une recherche avec un paramètre `type` vide retourne des décisions de toutes natures
 * **theme** (`array`) : filtre les résultats suivant la matière (nomenclature de la Cour de cassation) relative aux décisions (les valeurs disponibles sont accessibles via `GET $API/taxonomy?id=theme`). Une recherche avec un paramètre `theme` vide retourne des décisions relatives à toutes les matières
@@ -224,9 +224,9 @@ Connaissant l'identifiant unique d'une décision, ce point d'entrée permet d'en
 * Les délimitations des principales zones d'intérêt de son texte intégral (introduction, exposé du litige, moyens, motivations, dispositif et moyens annexés)
 * Ses éléments de titrage
 * Son sommaire
-* Ses visas
 * Ses documents associés (communiqué, note explicative, traduction, rapport, avis de l'avocat général, etc.)
 * Les textes appliqués
+* Les rapprochements de jurisprudence
 
 Certaines des informations ne sont retournées que sous forme de clé ou d'identifiant numérique (juridiction, chambre, niveau de publication, etc.). Il convient dès lors d'utiliser le point d'entrée `GET /taxonomy` pour en récupérer l'intitulé complet, ou d'effectuer la requête en utilisant le paramètre `resolve_references=true`.
 
@@ -264,8 +264,8 @@ Une requête réussie retourne un objet contenant les propriétés suivantes :
 * **summary** (`string`) : sommaire (texte brut)
 * **attachments** (`array`) : liste des documents associés à la décision, chaque document étant représenté par un objet `{ type, description, URL }` où `type` contient le type de document (communiqué, note explicative, traduction, rapport, avis de l'avocat général, etc.), `description` la description spécifique du document et `URL` contient le lien vers celui-ci
 * **bulletin** (`string`) : numéro de publication au bulletin
-* **visas** (`array`) : liste des visas associés à la décision, chaque visa étant représenté par un objet `{ number, description, titling, URL }` où `number` contient le numéro de pourvoi, `description` le court texte descriptif destiné à être affiché à côté de la décision, `titling` la liste de ses éléments de titrage et `URL` contient le lien vers la décision
 * **applied** (`array`) : liste des textes appliqués par la décision, chaque texte étant représenté par un objet `{ title, URL }` où `title` contient l'intitulé du texte et `URL` contient le lien vers celui-ci
+* **linked** (`array`) : liste des rapprochements de jurisprudence, chaque rapprochement étant représenté par un objet décrivant une décision `{ number, description, titling, URL }` où `number` contient son numéro de pourvoi, `description` son court texte descriptif, `titling` la liste de ses éléments de titrage et `URL` le lien vers celle-ci
 
 ## Taxonomie : `GET /taxonomy`
 
@@ -273,15 +273,16 @@ Une requête réussie retourne un objet contenant les propriétés suivantes :
 
 En complément, l'API publique propose la récupération des listes des termes (sous la forme d'un couple clé/valeur) constituants les différents critères et filtres pris en compte par le processus de recherche et les données qu'il restitue, notamment :
 
-* La liste des natures de décision ;
-* La liste des juridictions dont le système intègre les décisions ;
-* La liste des chambres ;
-* La liste des formations ;
-* La liste des commissions ;
-* La liste des niveaux de publication ;
-* La liste des matières ;
-* La liste des solutions ;
-* La liste des contenus des décisions pouvant être ciblés par la recherche.
+* La liste des natures de décision
+* La liste des juridictions dont le système intègre les décisions
+* La liste des chambres
+* La liste des formations
+* La liste des commissions
+* La liste des niveaux de publication
+* La liste des matières
+* La liste des solutions
+* La liste des contenus des décisions pouvant être ciblés par la recherche
+* etc.
 
 La publication de cette taxonomie permettra principalement au prestataire chargé de l'implémentation du frontend (ainsi qu'à certains réutilisateurs avancés) d'automatiser la constitution du formulaire de recherche et l'enrichissement des résultats retournés. 
 
