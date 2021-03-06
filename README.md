@@ -10,11 +10,11 @@ La Cour de cassation, dans le cadre de la refonte de son site Web, a initié le 
 
 ### Périmètre fonctionnel
 
-Les présentes spécifications se focalisent sur l'API publique du moteur de recherche OpenJustice. 
+Les présentes spécifications se focalisent sur l'API publique du moteur de recherche OpenJustice.
 
 Il s'agit de l'interface programmatique accessible via le Web et permettant d'effectuer des requêtes sur la base de données où sont indexées les décisions de justice.
 
-Le périmètre fonctionnel de l'API OpenJustice se déploie suivant sept axes (ou points d'entrée) distincts : 
+Le périmètre fonctionnel de l'API OpenJustice se déploie suivant sept axes (ou points d'entrée) distincts :
 
 * [Recherche libre : `GET /search`](#recherche-libre--get-search)
 * [Récupération d'une décision complète : `GET /decision`](#r%C3%A9cup%C3%A9ration-dune-d%C3%A9cision-compl%C3%A8te--get-decision)
@@ -101,7 +101,7 @@ La gestion d'erreur de l'API utilise les codes d'erreur HTTP standards :
 * **400** : Requête invalide
 * **401** : Authentification requise
 * **403** : Permissions insuffisantes
-* **423** : Accès bloqué suite à une activité suspecte 
+* **423** : Accès bloqué suite à une activité suspecte
 * **500** : Erreur indéfinie côté serveur
 * **502** : Le serveur ne répond pas
 
@@ -141,7 +141,7 @@ L'API publique permet en premier lieu d'effectuer une recherche sur la base de d
 * Pertinence et date (tri)
 * Nombre de résultats par page et index de la page de résultats affichée (navigation)
 
-La pertinence de la recherche équivaut à un score calculé par Elasticsearch à partir de la correspondance entre le texte en saisie libre et le contenu recherché. Par défaut, le moteur de recherche retourne les résultats classés par pertinence décroissante. 
+La pertinence de la recherche équivaut à un score calculé par Elasticsearch à partir de la correspondance entre le texte en saisie libre et le contenu recherché. Par défaut, le moteur de recherche retourne les résultats classés par pertinence décroissante.
 
 Les filtres sélectionnés ne modifient pas le score, mais permettent de retirer des résultats les décisions dont le contenu ne coïncide pas avec eux.
 
@@ -164,7 +164,7 @@ La récupération d'une décision complète repose sur le point d'entrée `GET /
 * **committee** (`array`) : filtre les résultats suivant la commission relative aux décisions (les valeurs disponibles sont accessibles via `GET $API/taxonomy?id=committee`). Une recherche avec un paramètre `committee` vide retourne des décisions relatives à toutes les commissions
 * **publication** (`array`) : filtre les résultats suivant le niveau de publication des décisions (parmi les valeurs : `b`, `p`, `r`, `i`, `l`, `c`, etc. - les valeurs disponibles sont accessibles via `GET $API/taxonomy?id=publication`). Une recherche avec un paramètre `publication` vide retourne des décisions de n'importe quel niveau de publication
 * **solution** (`array`) : filtre les résultats suivant le type de solution des décisions (parmi les valeurs : `annulation`, `avis`, `cassation`, `decheance`, `designation`, `irrecevabilite`, `nonlieu`, `qpc`, `rabat`, etc. - les valeurs disponibles sont accessibles via `GET $API/taxonomy?id=solution`). Une recherche avec un paramètre `solution` vide retourne des décisions ayant n'importe quel type de solution
-* **date_start** et **date_end** (`dates au format dd/mm/yyy`) : permet de restreindre les résultats à l'intervalle de dates fourni
+* **date_start** et **date_end** (`dates au format dd/mm/yyyy`) : permet de restreindre les résultats à l'intervalle de dates fourni
 * **sort** (`string`) : permet de choisir la valeur suivant laquelle les résultats sont triés (`score` pour un tri par pertinence, `scorepub` pour un tri par pertinence et niveau de publication et `date` pour un tri par date, vaut `scorepub` par défaut)
 * **order** (`string`) : permet de choisir l'ordre du tri (`asc` pour un tri ascendant ou `desc` pour un tri descendant, vaut `desc` par défaut)
 * **page_size** (`integer`) : permet de déterminer le nombre de résultats retournés par page (50 maximum, vaut 10 par défaut)
@@ -195,7 +195,7 @@ Une requête réussie retourne un objet contenant une liste de résultats ainsi 
   * **ecli** (`string`) : code ECLI de la décision
   * **formation** (`string`) : clé de la formation. Par défaut, utiliser `GET $API/taxonomy?id=formation&context_value=$jurisdiction&key=$formation` pour récupérer l'intitulé complet de celle-ci. Si la requête utilise `resolve_references=true`, alors cette propriété est retournée sous la forme d'un objet `{ key, value }`, où `key` contient la clé et `value` contient l'intitulé complet de celle-ci
   * **publication** (`string`) : clé du niveau de publication. Par défaut, utiliser `GET $API/taxonomy?id=publication&context_value=$jurisdiction&key=$publication` pour récupérer le nom de celui-ci. Si la requête utilise `resolve_references=true`, alors cette propriété est retournée sous la forme d'un objet `{ key, value }`, où `key` contient la clé et `value` contient l'intitulé complet de celle-ci
-  * **creation_date** (`date au format dd/mm/yyy`) : date de création de la décision
+  * **creation_date** (`date au format dd/mm/yyyy`) : date de création de la décision
   * **solution** (`string`) : clé de la solution. Par défaut, utiliser `GET $API/taxonomy?id=solution&context_value=$jurisdiction&key=$solution` pour récupérer l'intitulé complet de celle-ci. Si la requête utilise `resolve_references=true`, alors cette propriété est retournée sous la forme d'un objet `{ key, value }`, où `key` contient la clé et `value` contient l'intitulé complet de celle-ci
   * **solution_alt** (`string`) : intitulé complet de la solution (si celle-ci n'est pas normalisée et comprise dans la taxonomie)
   * **theme** (`array`) : liste des matières (ou éléments de titrage) par ordre de maillons (texte brut)
@@ -248,8 +248,8 @@ Une requête réussie retourne un objet contenant les propriétés suivantes :
 * **nac** (`string`) : code NAC de la décision
 * **formation** (`string`) : clé de la formation. Par défaut, utiliser `GET $API/taxonomy?id=formation&context_value=$jurisdiction&key=$formation` pour récupérer l'intitulé complet de celle-ci. Si la requête utilise `resolve_references=true`, alors cette propriété est retournée sous la forme d'un objet `{ key, value }`, où `key` contient la clé et `value` contient l'intitulé complet de celle-ci
 * **publication** (`string`) : clé du niveau de publication. Par défaut, utiliser `GET $API/taxonomy?id=publication&context_value=$jurisdiction&key=$publication` pour récupérer le nom de celui-ci. Si la requête utilise `resolve_references=true`, alors cette propriété est retournée sous la forme d'un objet `{ key, value }`, où `key` contient la clé et `value` contient l'intitulé complet de celle-ci
-* **creation_date** (`date au format dd/mm/yyy`) : date de création de la décision
-* **update_date** (`date au format dd/mm/yyy`) : date de dernière mise à jour de la décision
+* **creation_date** (`date au format dd/mm/yyyy`) : date de création de la décision
+* **update_date** (`date au format dd/mm/yyyy`) : date de dernière mise à jour de la décision
 * **solution** (`string`) : clé de la solution. Par défaut, utiliser `GET $API/taxonomy?id=solution&context_value=$jurisdiction&key=$solution` pour récupérer l'intitulé complet de celle-ci. Si la requête utilise `resolve_references=true`, alors cette propriété est retournée sous la forme d'un objet `{ key, value }`, où `key` contient la clé et `value` contient l'intitulé complet de celle-ci
 * **solution_alt** (`string`) : intitulé complet de la solution (si celle-ci n'est pas normalisée et comprise dans la taxonomie)
 * **text** (`string`): texte intégral et pseudonymisé de la décision (texte brut)
@@ -282,6 +282,7 @@ En complément, l'API publique propose la récupération des listes des termes (
 * La liste des matières (`theme`)
 * La liste des solutions (`solution`)
 * La liste des champs et des zones de contenu des décisions pouvant être ciblés par la recherche (`field`)
+* La liste des zones de contenu des décisions (`zones`)
 * etc.
 
 La publication de cette taxonomie permettra principalement au prestataire chargé de l'implémentation du frontend (ainsi qu'à certains réutilisateurs avancés) d'automatiser la constitution du formulaire de recherche et l'enrichissement des résultats retournés.
@@ -289,8 +290,10 @@ La publication de cette taxonomie permettra principalement au prestataire charg�
 ### Paramètres de la requête
 
 * **id** (`string`) : identifiant de l'entrée de taxonomie à interroger (`type`, `jurisdiction`, `chamber`, etc. - les valeurs disponibles sont accessibles via `GET $API/taxonomy`)
-* **key** (`string`) : clé dont on veut récupérer l'intitulé complet (le paramètre `id` est alors requis)
-* **value** (`string`) : intitulé complet dont on veut récupérer la clé (le paramètre `id` est alors requis)
+* **key** (`string`) : clé du terme dont on veut récupérer l'intitulé complet (le paramètre `id` est alors requis), par exemple : `GET $API/taxonomy?id=jurisdiction&key=cc` → `Cour de cassation`
+* **value** (`string`) : intitulé complet du terme dont on veut récupérer la clé (le paramètre `id` est alors requis), par exemple : `GET $API/taxonomy?id=jurisdiction&value=cour%20de%20cassation` → `cc`
+* **context_value** (`string`) : valeur pouvant être requise pour contextualiser certaines listes (par exemple, la liste des chambres qui n’a de sens que dans le contexte d’une juridiction – ainsi, pour obtenir la liste des chambres de la Cour de cassation : `GET $API/taxonomy?id=chamber&context_value=cc`)
+
 
 ### Format du résultat
 
@@ -348,13 +351,21 @@ Par exemple :
 
 L'API publiera notamment les statistiques suivantes, mises à jour quotidiennement :
 
-* Nombre de décisions indexées (au total, par année, par juridiction)
-* Nombre de requêtes (par jour, par semaine, etc.)
-* Date de la décision la plus ancienne, date de la décision la plus récente.
+* Nombre de décisions indexées (au total, par année, par juridiction : `index`)
+* Nombre de requêtes (par jour, par semaine, etc. : `request`)
+* Date de la décision la plus ancienne, date de la décision la plus récente (`date`)
 
 ### Paramètres de la requête
 
-`TODO`
+* **id** (`string`) : identifiant des statistiques à retourner (parmi les valeurs `index`, `request`, `date`)
+* **context_key** (`string`) et **context_value** (`string`) : clé et valeur permettant de manière optionnelle de contextualiser les statistiques demandées
+
+Exemples :
+
+* Le nombre de décisions indexées pour l’année 2019 : `GET $API/stats?id=index&context_key=year&context_value=2019`
+* Le nombre de décisions indexées issues de la Cour de cassation : `GET $API/stats?id=index&context_key=jurisdiction&context_value=cc`
+* Le nombre de requêtes par jour : `GET $API/stats?id=request&context_key=day`
+* Date de la décision la plus ancienne : `GET $API/stats?id=date&context_key=oldest`
 
 ### Format du résultat
 
@@ -380,7 +391,19 @@ L'export par lots est limité par défaut à 100 résultats par lot, pour un max
 
 ### Paramètres de la requête
 
-`TODO`
+* **type** (`array`) : filtre l’export suivant la natures des décisions (parmi les valeurs : 'arret', 'qpc', 'qpj', 'ordonnance', 'saisie'). Un export avec un paramètre type vide retourne des décisions de toutes natures
+* **theme** (`array`) : filtre l’export suivant la matière relative aux décisions (les valeurs disponibles seront accessibles via GET /taxon?id=theme). Un export avec un paramètre theme vide retourne des décisions relatives à toutes matières
+* **chamber** (`array`) : filtre l’export suivant la chambre relative aux décisions (les valeurs disponibles seront accessibles via GET /taxon?id=chamber). Un export avec un paramètre chamber vide retourne des décisions relatives à toutes les chambres
+* **formation** (`array`) : filtre l’export suivant la formation relative aux décisions (les valeurs disponibles seront accessibles via GET /taxon?id=formation). Un export avec un paramètre formation vide retourne des décisions relatives à toutes les formations
+* **jurisdiction** (`array`) : filtre l’export suivant la juridiction relative aux décisions (les valeurs disponibles seront accessibles via GET /taxon?id=jurisdiction). Un export avec un paramètre jurisdiction vide retourne des décisions relatives à toutes les juridictions
+* **committee** (`array`) : filtre l’export suivant la commission relative aux décisions (les valeurs disponibles seront accessibles via GET /taxon?id=committee). Un export avec un paramètre committee vide retourne des décisions relatives à toutes les commissions
+* **publication** (`array`) : filtre l’export suivant le niveau de publication des décisions (parmi les valeurs : 'nonpub', 'bulletin', 'lettre', 'rapport', 'c'). Un export avec un paramètre publication vide retourne des décisions de n’importe quel niveau de publication
+* **solution** (`array`) : filtre l’export suivant le type de solution des décisions (parmi les valeurs : 'annulation', 'avis', 'cassation', 'decheance', 'designation', 'irrecevabilite', 'nonlieu', 'qpc', 'rabat'). Un export avec un paramètre solution vide retourne des décisions ayant n’importe quel type de solution
+* **date_start** et **date_end** (`dates au format dd/mm/yyyy`) : permet de restreindre l’export à l’intervalle de dates fourni
+* **date_type** (`string`) : type de date à prendre en compte pour l’intervalle de dates fourni pour l’export (vaut 'creation' ou 'update')
+* **order** (`string`) : permet de choisir l’ordre du tri des décisions exportées ('asc' pour un tri par date chronologique ou 'desc' pour un tri par date antichronologique, vaut 'asc' par défaut)
+* **size** (`integer`) : permet de déterminer le nombre de résultats retournés par lot (100 maximum, vaut 50 par défaut)
+* **offset** (`integer`) : permet de déterminer le numéro du lot de résultats à retourner (le premier lot ayant un offset valant 0)
 
 ### Format du résultat
 
