@@ -21,8 +21,8 @@ Le périmètre fonctionnel de l'API OpenJustice se déploie suivant sept axes (o
 * [Taxonomie : `GET /taxonomy`](https://github.com/Cour-de-cassation/openjustice-specs#taxonomie--get-taxonomy)
 * [Statistiques : `GET /stats`](#statistiques--get-stats)
 * [Export par lots : `GET /export`](#export-par-lots--get-export)
-* [Import par lots : `POST/PUT/DELETE /import`](#import-par-lots--postputdelete-import)
-* [Administration : `GET/POST/PUT/DELETE /admin`](#administration--getpostputdelete-admin)
+* [Import par lots : `POST,PUT,DELETE /import`](#import-par-lots--postputdelete-import)
+* [Administration : `GET,POST,PUT,DELETE /admin`](#administration--getpostputdelete-admin)
 
 ### Choix d'implémentation
 
@@ -446,7 +446,7 @@ Une requête réussie retourne un objet contenant une liste de résultats ainsi 
     * **applied** (`array`) : liste des textes appliqués par la décision, chaque texte étant représenté par un objet `{ title, URL }` où `title` contient l'intitulé du texte et `URL` contient le lien vers celui-ci
     * **linked** (`array`) : liste des rapprochements de jurisprudence, chaque rapprochement étant représenté par un objet décrivant une décision `{ number, description, theme, URL }` où `number` contient son numéro de pourvoi, `description` son court texte descriptif, `theme` la liste de ses matières (ou éléments de titrage) et `URL` le lien vers celle-ci
 
-## Import par lots : `POST/PUT/DELETE /import`
+## Import par lots : `POST,PUT,DELETE /import`
 
 ### Description
 
@@ -462,7 +462,7 @@ Cette interface, à l'usage exclusif de la Cour de cassation, permet l'indexatio
 
 `TODO`
 
-## Administration : `GET/POST/PUT/DELETE /admin`
+## Administration : `GET,POST,PUT,DELETE /admin`
 
 ### Description
 
