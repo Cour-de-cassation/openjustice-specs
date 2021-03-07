@@ -391,29 +391,60 @@ L'export par lots est limité par défaut à 100 résultats par lot, pour un max
 
 ### Paramètres de la requête
 
-* **type** (`array`) : filtre l’export suivant la natures des décisions (parmi les valeurs : 'arret', 'qpc', 'qpj', 'ordonnance', 'saisie'). Un export avec un paramètre type vide retourne des décisions de toutes natures
-* **theme** (`array`) : filtre l’export suivant la matière relative aux décisions (les valeurs disponibles seront accessibles via GET /taxon?id=theme). Un export avec un paramètre theme vide retourne des décisions relatives à toutes matières
-* **chamber** (`array`) : filtre l’export suivant la chambre relative aux décisions (les valeurs disponibles seront accessibles via GET /taxon?id=chamber). Un export avec un paramètre chamber vide retourne des décisions relatives à toutes les chambres
-* **formation** (`array`) : filtre l’export suivant la formation relative aux décisions (les valeurs disponibles seront accessibles via GET /taxon?id=formation). Un export avec un paramètre formation vide retourne des décisions relatives à toutes les formations
-* **jurisdiction** (`array`) : filtre l’export suivant la juridiction relative aux décisions (les valeurs disponibles seront accessibles via GET /taxon?id=jurisdiction). Un export avec un paramètre jurisdiction vide retourne des décisions relatives à toutes les juridictions
-* **committee** (`array`) : filtre l’export suivant la commission relative aux décisions (les valeurs disponibles seront accessibles via GET /taxon?id=committee). Un export avec un paramètre committee vide retourne des décisions relatives à toutes les commissions
-* **publication** (`array`) : filtre l’export suivant le niveau de publication des décisions (parmi les valeurs : 'nonpub', 'bulletin', 'lettre', 'rapport', 'c'). Un export avec un paramètre publication vide retourne des décisions de n’importe quel niveau de publication
-* **solution** (`array`) : filtre l’export suivant le type de solution des décisions (parmi les valeurs : 'annulation', 'avis', 'cassation', 'decheance', 'designation', 'irrecevabilite', 'nonlieu', 'qpc', 'rabat'). Un export avec un paramètre solution vide retourne des décisions ayant n’importe quel type de solution
+* **type** (`array`) : filtre l’export suivant la natures des décisions (parmi les valeurs : `arret`, `qpc`, `qpj`, `ordonnance`, `saisie`, etc. - les valeurs disponibles sont accessibles via `GET $API/taxonomy?id=type`). Un export avec un paramètre `type` vide retourne des décisions de toutes natures
+* **theme** (`array`) : filtre l'export suivant la matière (nomenclature de la Cour de cassation) relative aux décisions (les valeurs disponibles sont accessibles via `GET $API/taxonomy?id=theme`). Un export avec un paramètre `theme` vide retourne des décisions relatives à toutes matières
+* **chamber** (`array`) : filtre l’export suivant la chambre relative aux décisions (les valeurs disponibles sont accessibles via `GET $API/taxonomy?id=chamber`). Un export avec un paramètre `chamber` vide retourne des décisions relatives à toutes les chambres
+* **formation** (`array`) : filtre l’export suivant la formation relative aux décisions (les valeurs disponibles sont accessibles via `GET $API/taxonomy?id=formation`). Un export avec un paramètre `formation` vide retourne des décisions relatives à toutes les formations
+* **jurisdiction** (`array`) : filtre l’export suivant la juridiction relative aux décisions (les valeurs disponibles sont accessibles via `GET $API/taxonomy?id=jurisdiction`). Un export avec un paramètre `jurisdiction` vide retourne des décisions relatives à toutes les juridictions
+* **committee** (`array`) : filtre l’export suivant la commission relative aux décisions (les valeurs disponibles sont accessibles via `GET $API/taxonomy?id=committee`). Un export avec un paramètre `committee` vide retourne des décisions relatives à toutes les commissions
+* **publication** (`array`) : filtre l’export suivant le niveau de publication des décisions (parmi les valeurs : `b`, `p`, `r`, `i`, `l`, `c`, etc. - les valeurs disponibles sont accessibles via `GET $API/taxonomy?id=publication`). Un export avec un paramètre `publication` vide retourne des décisions de n’importe quel niveau de publication
+* **solution** (`array`) : filtre l’export suivant le type de solution des décisions (parmi les valeurs : `annulation`, `avis`, `cassation`, `decheance`, `designation`, `irrecevabilite`, `nonlieu`, `qpc`, `rabat`, etc. - les valeurs disponibles sont accessibles via `GET $API/taxonomy?id=solution`). Un export avec un paramètre `solution` vide retourne des décisions ayant n’importe quel type de solution
 * **date_start** et **date_end** (`dates au format dd/mm/yyyy`) : permet de restreindre l’export à l’intervalle de dates fourni
-* **date_type** (`string`) : type de date à prendre en compte pour l’intervalle de dates fourni pour l’export (vaut 'creation' ou 'update')
+* **date_type** (`string`) : type de date à prendre en compte pour l’intervalle de dates fourni pour l’export (vaut `creation` ou `update`)
 * **order** (`string`) : permet de choisir l’ordre du tri des décisions exportées ('asc' pour un tri par date chronologique ou 'desc' pour un tri par date antichronologique, vaut 'asc' par défaut)
-* **size** (`integer`) : permet de déterminer le nombre de résultats retournés par lot (100 maximum, vaut 50 par défaut)
-* **offset** (`integer`) : permet de déterminer le numéro du lot de résultats à retourner (le premier lot ayant un offset valant 0)
+* **batch_size** (`integer`) : permet de déterminer le nombre de résultats retournés par lot (100 maximum, vaut 50 par défaut)
+* **batch** (`integer`) : permet de déterminer le numéro du lot de résultats à retourner (le premier lot ayant un offset valant 0)
+* **resolve_references** (`boolean`) : lorsque ce paramètre vaut `true`, le résultat de la requête contiendra, pour chaque information retournée par défaut sous forme de clé, l'intitulé complet de celle-ci (vaut `false` par défaut)
+
 
 ### Format du résultat
 
-Une requête réussie retourne un objet contenant une liste de décisions, chaque décision étant un objet similaire à celui retourné par une requête `GET /decision` :
+Une requête réussie retourne un objet contenant une liste de résultats ainsi que les propriétés suivantes :
 
-* **offset** (`integer`) : numéro du lot courant (le premier lot ayant un offset valant 0)
-* **size** (`integer`) : nombre de résultats retournés par lot
-* **query** (`object`) : objet contenant les paramètres de la requête originelle (voir 3.2.5)
+* **batch** (`integer`) : numéro du lot courant (le premier lot ayant un offset valant 0)
+* **batch_size** (`integer`) : nombre de résultats retournés par lot
+* **query** (`object`) : objet contenant les paramètres de la requête originelle
 * **total** (`integer`) : nombre total de décisions retournées par la requête
-* **decisions** (`array`) : liste des décisions retournées.
+* **next_batch** (`string`) : URL du lot de résultats suivant (vaut null si le lot courant est le dernier)
+* **previous_batch** (`string`) : URL du lot de résultats précédent (vaut null si le lot courant est le premier)
+* **took** (`integer`) : temps d'exécution de la requête (en millisecondes)
+* **result** (`array`) : liste des décisions retournées, chaque décision étant un objet contenant les propriétés suivantes :
+    * **id** (`string`) : identifiant de la décision
+    * **jurisdiction** (`string`) : clé de la juridiction. Par défaut, utiliser `GET $API/taxonomy?id=jurisdiction&key=$jurisdiction` pour récupérer l'intitulé complet de celle-ci. Si la requête utilise `resolve_references=true`, alors cette propriété est retournée sous la forme d'un objet `{ key, value }`, où `key` contient la clé et `value` contient l'intitulé complet de celle-ci
+    * **chamber** (`string`) : clé de la chambre. Par défaut, utiliser `GET $API/taxonomy?id=chamber&context_value=$jurisdiction&key=$chamber` pour récupérer l'intitulé complet de celle-ci. Si la requête utilise `resolve_references=true`, alors cette propriété est retournée sous la forme d'un objet `{ key, value }`, où `key` contient la clé et `value` contient l'intitulé complet de celle-ci
+    * **number** (`string`) : numéro de pourvoi de la décision
+    * **ecli** (`string`) : code ECLI de la décision
+    * **nac** (`string`) : code NAC de la décision
+    * **formation** (`string`) : clé de la formation. Par défaut, utiliser `GET $API/taxonomy?id=formation&context_value=$jurisdiction&key=$formation` pour récupérer l'intitulé complet de celle-ci. Si la requête utilise `resolve_references=true`, alors cette propriété est retournée sous la forme d'un objet `{ key, value }`, où `key` contient la clé et `value` contient l'intitulé complet de celle-ci
+    * **publication** (`string`) : clé du niveau de publication. Par défaut, utiliser `GET $API/taxonomy?id=publication&context_value=$jurisdiction&key=$publication` pour récupérer le nom de celui-ci. Si la requête utilise `resolve_references=true`, alors cette propriété est retournée sous la forme d'un objet `{ key, value }`, où `key` contient la clé et `value` contient l'intitulé complet de celle-ci
+    * **creation_date** (`date au format dd/mm/yyyy`) : date de création de la décision
+    * **update_date** (`date au format dd/mm/yyyy`) : date de dernière mise à jour de la décision
+    * **solution** (`string`) : clé de la solution. Par défaut, utiliser `GET $API/taxonomy?id=solution&context_value=$jurisdiction&key=$solution` pour récupérer l'intitulé complet de celle-ci. Si la requête utilise `resolve_references=true`, alors cette propriété est retournée sous la forme d'un objet `{ key, value }`, où `key` contient la clé et `value` contient l'intitulé complet de celle-ci
+    * **solution_alt** (`string`) : intitulé complet de la solution (si celle-ci n'est pas normalisée et comprise dans la taxonomie)
+    * **text** (`string`): texte intégral et pseudonymisé de la décision (texte brut)
+    * **zones** (`object`) : objet définissant les différentes zones détectées dans le texte intégral de la décision. Chaque zone contient une liste d'objets `{ start, end }` indiquant respectivement l'indice de début et de fin des caractères (relativement au texte intégral) contenus dans chaque segment de la zone (une zone pouvant contenir plusieurs segments) :
+      * `introduction` : introduction de la décision
+      * `expose` : exposé du litige
+      * `moyens` : moyens
+      * `motivations` : motivations
+      * `dispositif` : dispositifs
+      * `annexes` : moyens annexés
+    * **theme** (`array`) : liste des matières (ou éléments de titrage) par ordre de maillons (texte brut)
+    * **summary** (`string`) : sommaire (texte brut)
+    * **attachment** (`array`) : liste des documents associés à la décision, chaque document étant représenté par un objet `{ type, description, URL }` où `type` contient le type de document (communiqué, note explicative, traduction, rapport, avis de l'avocat général, etc.), `description` la description spécifique du document et `URL` contient le lien vers celui-ci
+    * **bulletin** (`string`) : numéro de publication au bulletin
+    * **applied** (`array`) : liste des textes appliqués par la décision, chaque texte étant représenté par un objet `{ title, URL }` où `title` contient l'intitulé du texte et `URL` contient le lien vers celui-ci
+    * **linked** (`array`) : liste des rapprochements de jurisprudence, chaque rapprochement étant représenté par un objet décrivant une décision `{ number, description, theme, URL }` où `number` contient son numéro de pourvoi, `description` son court texte descriptif, `theme` la liste de ses matières (ou éléments de titrage) et `URL` le lien vers celle-ci
 
 ## Import par lots : `POST/PUT/DELETE /import`
 
