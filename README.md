@@ -32,7 +32,7 @@ Elle interagit avec un serveur de base de données Elasticsearch dont l'interfac
 
 ### Racine
 
-Le point d'entrée racine de l'API est [http://dev.opj.intranet.justice.gouv.fr/openjustice/v1/](http://dev.opj.intranet.justice.gouv.fr/openjustice/v1/).
+Le point d'entrée racine de l'API est [http://???/openjustice/v1/](http://???/openjustice/v1/) (l'URL finale reste à définir).
 
 Dans la suite de cette documentation, il y sera fait référence par `$API`.
 
