@@ -6,7 +6,7 @@
 * Au format Swagger 2.0 : [JUDILIBRE-public-swagger.json](https://github.com/Cour-de-cassation/judilibre-search/blob/dev/public/JUDILIBRE-public-swagger.json)
 * Au format OpenAPI 3.0.2 : [JUDILIBRE-public.json](https://github.com/Cour-de-cassation/judilibre-search/blob/dev/public/JUDILIBRE-public.json)
 
-**Une [documentation statique au format HTML](https://github.com/Cour-de-cassation/judilibre-search/tree/dev/public/static) est automatiquement générée dans le même projet.**
+**Une [documentation statique au format HTML](https://github.com/Cour-de-cassation/judilibre-search/tree/dev/public/doc) est automatiquement générée dans le même projet.**
 
 ## Introduction
 
